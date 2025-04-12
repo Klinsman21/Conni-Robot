@@ -51,12 +51,14 @@ coverage.xml
 .pytest_cache/
 cover/
 
+face_memory/
+
 # Translations
 *.mo
 *.pot
 /dataset/
-/face_memory/
-/face_memory/*
+
+
 *.weights
 
 # pyenv
