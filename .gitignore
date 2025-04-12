@@ -55,8 +55,8 @@ cover/
 *.mo
 *.pot
 /dataset/
-/trainer/
-/trainer/*
+/face_memory/
+/face_memory/*
 *.weights
 
 # pyenv
