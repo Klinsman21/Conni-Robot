@@ -7,22 +7,41 @@ from itertools import cycle
 class EilikEyes(tk.Tk):
     def __init__(self):
         super().__init__()
+        self.screen_w = self.winfo_screenwidth()
+        self.screen_h = self.winfo_screenheight()
+
+        self.withdraw()
+
         self.title("Olhos do Eilik - Expressões Animadas")
-        self.geometry("400x300")
         self.configure(bg="black")
+        self.config(cursor='none')
+        self.overrideredirect(True)  # Remove bordas e barra de título
+        self.geometry("{0}x{1}+0+0".format(
+            self.winfo_screenwidth(), self.winfo_screenheight()))
+
+        # Tecla ESC para sair
+        self.bind("<Escape>", lambda e: self.destroy())
 
         # Configurações dos olhos
         self.eye_color = "#45b7d1"  # Azul claro estilo Eilik
         self.pupil_color = "#0e2a47"  # Azul escuro
         self.highlight_color = "white"
-        self.eye_width = 60
-        self.eye_height = 65
-        self.eye_spacing = 250
-        self.pupil_size = 25
-        self.center_y = 150
+        self.eye_width = int(self.screen_w * 0.17)  # 8% da largura
+        self.eye_height = int(self.eye_width + 5)  # 12% da altura
+        self.pupil_size = int(self.eye_width * 0.4)  # 40% do olho
+        self.eye_spacing = int(self.screen_w * 0.62)  # 25% da largura
 
-        self.canvas = tk.Canvas(self, width=400, height=300, bg="black", highlightthickness=0)
+        # Redefine o centro com base no tamanho da tela
+        self.center_x = self.screen_w // 2
+        self.center_y = self.screen_h // 2
+
+        self.canvas = tk.Canvas(self, width=self.winfo_screenwidth(), height=self.winfo_screenheight(), bg="black",
+                                highlightthickness=0)
         self.canvas.pack()
+        self.canvas.bind("<Button-1>", self.handle_touch)  # Toque/cliqu
+
+        self.after(100, self.deiconify)
+        self.after(150, self.focus_force)
 
         # Elementos dos olhos
         self.left_eye = None
@@ -50,11 +69,12 @@ class EilikEyes(tk.Tk):
         self.animation_running = False
 
         # Controles
-        self.setup_controls()
-        self.draw_eyes()
+        # self.setup_controls()
+        # self.draw_eyes()
+        self.after(100, self.draw_eyes())
 
         self.auto_blink()
-        # self.natural_movement()
+        self.natural_movement()
         # self.random_movement()
         # self.sad_eyes()
         # self.random_expression_loop()
@@ -72,10 +92,20 @@ class EilikEyes(tk.Tk):
             )
             btn.pack(side="left", padx=5)
 
+    def handle_touch(self, event):
+        """Reage ao toque na tela"""
+        # Fecha após 2 toques rápidos (double-tap)
+        if hasattr(self, 'last_touch_time'):
+            if (event.time - self.last_touch_time) < 300:  # 300ms
+                self.destroy()
+                return
+
+        self.last_touch_time = event.time
+
     def draw_eyes(self):
         self.canvas.delete("all")
-        x_left = 200 - self.eye_spacing // 2
-        x_right = 200 + self.eye_spacing // 2
+        x_left = self.center_x - self.eye_spacing // 2
+        x_right = self.center_x + self.eye_spacing // 2
 
         # Desenha a base dos olhos
         self.left_eye = self.canvas.create_oval(
@@ -187,7 +217,7 @@ class EilikEyes(tk.Tk):
         self.canvas.coords(self.left_pupil, *left_pupil_coords)
         self.canvas.coords(self.right_pupil, *right_pupil_coords)
 
-    def look(self, direction, duration=0.3):
+    def look(self, direction, duration=0.3, move_amount=40):
         """Move os olhos de forma suave e realista para uma direção"""
         if self.animation_running:
             return
@@ -195,7 +225,6 @@ class EilikEyes(tk.Tk):
         self.animation_running = True
 
         # Configurações de movimento
-        move_amount = 15  # quanto a pupila pode se mover
         steps = int(duration * 1000 / 20)  # calcula steps baseado na duração
         current_step = 0
 
@@ -209,8 +238,8 @@ class EilikEyes(tk.Tk):
         current_right_y = (right_coords[1] + right_coords[3]) / 2
 
         # Posições dos centros dos olhos
-        x_left = 200 - self.eye_spacing // 2
-        x_right = 200 + self.eye_spacing // 2
+        x_left = self.center_x - self.eye_spacing // 2
+        x_right = self.center_x + self.eye_spacing // 2
 
         # Alvos baseados na direção
         if direction == "left":
@@ -300,8 +329,8 @@ class EilikEyes(tk.Tk):
 
     # Expressões faciais
     def neutral_eyes(self):
-        x_left = 200 - self.eye_spacing // 2
-        x_right = 200 + self.eye_spacing // 2
+        x_left = self.center_x - self.eye_spacing // 2
+        x_right = self.center_x + self.eye_spacing // 2
 
         # Olhos com formato normal
         self.canvas.coords(self.left_eye,
@@ -334,8 +363,8 @@ class EilikEyes(tk.Tk):
         self.canvas.coords(self.right_eyelid_bottom, 0, 0, 0, 0)
 
     def happy_eyes(self):
-        x_left = 200 - self.eye_spacing // 2
-        x_right = 200 + self.eye_spacing // 2
+        x_left = self.center_x - self.eye_spacing // 2
+        x_right = self.center_x + self.eye_spacing // 2
 
         # Olhos mais estreitos (como sorrindo)
         self.canvas.coords(self.left_eye,
@@ -354,8 +383,8 @@ class EilikEyes(tk.Tk):
                            x_right + 20, self.center_y + 10)
 
     def sad_eyes(self):
-        x_left = 200 - self.eye_spacing // 2
-        x_right = 200 + self.eye_spacing // 2
+        x_left = self.center_x - self.eye_spacing // 2
+        x_right = self.center_x + self.eye_spacing // 2
 
         # Olhos mais abertos na parte inferior, simulando olhar triste
         self.canvas.coords(self.left_eye,
@@ -392,8 +421,8 @@ class EilikEyes(tk.Tk):
         )
 
     def angry_eyes(self):
-        x_left = 200 - self.eye_spacing // 2
-        x_right = 200 + self.eye_spacing // 2
+        x_left = self.center_x - self.eye_spacing // 2
+        x_right = self.center_x + self.eye_spacing // 22
 
         # Olhos em diagonal (como sobrancelhas franzidas)
         self.canvas.coords(self.left_eye,
@@ -412,8 +441,8 @@ class EilikEyes(tk.Tk):
                            x_right + 15, self.center_y + 20)
 
     def surprised_eyes(self):
-        x_left = 200 - self.eye_spacing // 2
-        x_right = 200 + self.eye_spacing // 2
+        x_left = self.center_x - self.eye_spacing // 2
+        x_right = self.center_x + self.eye_spacing // 2
 
         # Olhos bem arredondados
         self.canvas.coords(self.left_eye,
@@ -432,8 +461,8 @@ class EilikEyes(tk.Tk):
                            x_right + 10, self.center_y + 10)
 
     def sleepy_eyes(self):
-        x_left = 200 - self.eye_spacing // 2
-        x_right = 200 + self.eye_spacing // 2
+        x_left = self.center_x - self.eye_spacing // 2
+        x_right = self.center_x + self.eye_spacing // 2
 
         # Olhos semi-fechados
         self.canvas.coords(self.left_eye,
@@ -452,8 +481,8 @@ class EilikEyes(tk.Tk):
                            x_right + 5, self.center_y + 5)
 
     def playful_eyes(self):
-        x_left = 200 - self.eye_spacing // 2
-        x_right = 200 + self.eye_spacing // 2
+        x_left = self.center_x - self.eye_spacing // 2
+        x_right = self.center_x + self.eye_spacing // 2
 
         # Olhos assimétricos (um mais aberto que o outro)
         self.canvas.coords(self.left_eye,
@@ -498,8 +527,9 @@ class EilikEyes(tk.Tk):
 
     def update_eyelids(self, fraction):
         margin = 10  # valor ajustável: maior = pálpebras maiores
-        x_left = 200 - self.eye_spacing // 2
-        x_right = 200 + self.eye_spacing // 2
+        # Posições dos centros dos olhos
+        x_left = self.center_x - self.eye_spacing // 2
+        x_right = self.center_x + self.eye_spacing // 2
 
         top_height = self.center_y - (self.eye_height + margin) * (1 - fraction)
         bottom_height = self.center_y + (self.eye_height + margin) * (1 - fraction)
@@ -508,19 +538,21 @@ class EilikEyes(tk.Tk):
 
         # LEFT
         self.canvas.coords(self.left_eyelid_top,
-                           x_left - eye_w, 0,
+                           x_left - eye_w, self.center_y - self.eye_height - margin,
                            x_left + eye_w, top_height)
+
         self.canvas.coords(self.left_eyelid_bottom,
                            x_left - eye_w, bottom_height,
-                           x_left + eye_w, 300)
+                           x_left + eye_w, self.center_y + self.eye_height + margin)
 
         # RIGHT
         self.canvas.coords(self.right_eyelid_top,
-                           x_right - eye_w, 0,
+                           x_right - eye_w, self.center_y - self.eye_height - margin,
                            x_right + eye_w, top_height)
+
         self.canvas.coords(self.right_eyelid_bottom,
                            x_right - eye_w, bottom_height,
-                           x_right + eye_w, 300)
+                           x_right + eye_w, self.center_y + self.eye_height + margin)
 
     def auto_blink(self):
         self.after(random.randint(3000, 8000), self.auto_blink)
@@ -547,8 +579,8 @@ class EilikEyes(tk.Tk):
         dy = random.randint(-5, 5)
 
         # Centro dos olhos
-        x_left = 200 - self.eye_spacing // 2
-        x_right = 200 + self.eye_spacing // 2
+        x_left = self.center_x - self.eye_spacing // 2
+        x_right = self.center_x + self.eye_spacing // 2
 
         # Calcula novo centro proposto
         def move_pupil_safe(pupil, eye_center_x, eye_center_y):
