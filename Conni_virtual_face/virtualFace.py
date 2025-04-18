@@ -26,14 +26,14 @@ class EilikEyes(tk.Tk):
         self.eye_color = "#45b7d1"  # Azul claro estilo Eilik
         self.pupil_color = "#0e2a47"  # Azul escuro
         self.highlight_color = "white"
-        self.eye_width = int(self.screen_w * 0.17)  # 8% da largura
+        self.eye_width = int(self.screen_w * 0.16)  # 8% da largura
         self.eye_height = int(self.eye_width + 5)  # 12% da altura
         self.pupil_size = int(self.eye_width * 0.4)  # 40% do olho
         self.eye_spacing = int(self.screen_w * 0.62)  # 25% da largura
 
         # Redefine o centro com base no tamanho da tela
-        self.center_x = self.screen_w // 2
-        self.center_y = self.screen_h // 2
+        self.center_x = self.screen_w // 2 - 3
+        self.center_y = self.screen_h // 2 + 10
 
         self.canvas = tk.Canvas(self, width=self.winfo_screenwidth(), height=self.winfo_screenheight(), bg="black",
                                 highlightthickness=0)
