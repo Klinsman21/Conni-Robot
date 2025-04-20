@@ -1,41 +1,11 @@
-import os
-import wave
-import json
-from vosk import Model, KaldiRecognizer
-
-# Caminho para o modelo
-model_path = "vosk-model"
-
-# Caminho para o arquivo de áudio
-audio_file_path = "banheiro.wav"
-
-# Carregar o modelo
-model = Model(model_path)
-
-# Abrir o arquivo de áudio (.wav)
-wf = wave.open(audio_file_path, "rb")
-
-# Verificar se o arquivo de áudio tem a taxa de amostragem correta (16 kHz)
-if wf.getsampwidth() != 2 or wf.getframerate() != 16000:
-    print("O arquivo de áudio precisa ser 16 kHz e estéreo de 16 bits.")
-    exit(1)
-
-# Inicializar o reconhecedor de fala
-recognizer = KaldiRecognizer(model, wf.getframerate())
-
-# Inicializar a transcrição
-transcription = ""
-
-# Processar o áudio em blocos
-while True:
-    data = wf.readframes(12000)
-    if len(data) == 0:
-        break
-    recognizer.AcceptWaveform(data)
-    temp = json.loads(recognizer.PartialResult())["partial"]
-    if transcription != temp:
-        transcription += temp
-
-# Mostrar a transcrição final
-print("Transcrição completa:")
-print(transcription)
+from openai import OpenAI
+client = OpenAI(api_key="sk-d485bf5b95274171992e0368a797d340", base_url="https://api.deepseek.com")
+response = client.chat.completions.create(
+    model="deepseek-chat",
+    messages=[
+        {"role": "system", "content": "You are a helpful assistant"},
+        {"role": "user", "content": "Hello"},
+    ],
+    stream=False
+)
+print(response.choices[0].message.content)

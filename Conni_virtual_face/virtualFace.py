@@ -1,6 +1,7 @@
 import tkinter as tk
 import math
 import random
+from display import get_max_brightness, set_brightness
 from itertools import cycle
 
 
@@ -67,6 +68,8 @@ class EilikEyes(tk.Tk):
 
         self.current_expression = "Neutro"
         self.animation_running = False
+
+        set_brightness(80)
 
         # Controles
         # self.setup_controls()

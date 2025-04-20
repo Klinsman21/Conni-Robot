@@ -57,6 +57,7 @@ face_memory/
 *.mo
 *.pot
 /dataset/
+/vosk-model/
 
 
 *.weights
