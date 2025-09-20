@@ -5,7 +5,7 @@ from display import get_max_brightness, set_brightness
 from itertools import cycle
 
 
-class EilikEyes(tk.Tk):
+class ConniFace(tk.Tk):
     def __init__(self):
         super().__init__()
         self.screen_w = self.winfo_screenwidth()
@@ -69,7 +69,7 @@ class EilikEyes(tk.Tk):
         self.current_expression = "Neutro"
         self.animation_running = False
 
-        set_brightness(80)
+        # set_brightness(80)
 
         # Controles
         # self.setup_controls()
@@ -624,5 +624,5 @@ class EilikEyes(tk.Tk):
 
 
 if __name__ == "__main__":
-    app = EilikEyes()
+    app = ConniFace()
     app.mainloop()
