@@ -4,6 +4,12 @@
 opencv-python==4.8.1.78
 numpy==1.24.3
 
+# MediaPipe para detecção de faces mais precisa
+mediapipe==0.10.7
+
+# DeepFace para detecção de expressões faciais
+deepface==0.0.79
+
 # Reconhecimento de voz
 vosk==0.3.45
 

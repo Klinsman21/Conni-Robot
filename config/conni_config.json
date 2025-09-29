@@ -1,0 +1,19 @@
+{
+  "camera": {
+    "width": 640,
+    "height": 480,
+    "fps": 30
+  },
+  "detection": {
+    "scale_factor": 1.1,
+    "min_neighbors": 5,
+    "min_size": [30, 30],
+    "avg_face_width_cm": 14.0
+  },
+  "calibration": {
+    "focal_length": 500.0,
+    "calibrated": false,
+    "calibration_date": null,
+    "calibration_distance_cm": null
+  }
+}
